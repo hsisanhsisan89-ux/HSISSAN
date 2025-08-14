@@ -1,0 +1,33 @@
+name: TOOLBOXLAP
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build:
+    name: Start Building
+    runs-on: windows-latest
+    timeout-minutes: 999
+
+    steps:
+      
+      - name: Downloading File
+        run: |
+          Invoke-WebRequest -Uri "https://example.com/Downloads.bat" -OutFile "Downloads.bat"
+          Write-Output "✅ File downloaded successfully"
+
+      
+      - name: Verify File Integrity
+        run: |
+          $ExpectedHash = "https://example.com/Downloads.bat"
+          $ActualHash = (Get-FileHash "Downloads.bat" -Algorithm SHA256).Hash
+          if ($ActualHash -ne $ExpectedHash) {
+            Write-Error "❌ File integrity check failed!"
+            exit 1
+          } else {
+            Write-Output "✅ File integrity verified"
+          }
+
+     
+      - name: Run the Script
+        run: cmd /c Downloads.bat
